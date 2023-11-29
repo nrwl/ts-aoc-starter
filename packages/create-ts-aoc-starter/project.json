@@ -1,0 +1,41 @@
+{
+  "name": "create-ts-aoc-starter",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/create-ts-aoc-starter/bin",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/create-ts-aoc-starter",
+        "main": "packages/create-ts-aoc-starter/bin/index.ts",
+        "tsConfig": "packages/create-ts-aoc-starter/tsconfig.lib.json",
+        "assets": ["packages/create-ts-aoc-starter/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs create-ts-aoc-starter {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/create-ts-aoc-starter/**/*.ts",
+          "packages/create-ts-aoc-starter/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/create-ts-aoc-starter/jest.config.ts"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ts-aoc-starter"]
+}
