@@ -47,7 +47,8 @@
         "lintFilePatterns": [
           "packages/ts-aoc-starter/**/*.ts",
           "packages/ts-aoc-starter/package.json",
-          "packages/ts-aoc-starter/generators.json"
+          "packages/ts-aoc-starter/generators.json",
+          "packages/ts-aoc-starter/executors.json"
         ]
       }
     },

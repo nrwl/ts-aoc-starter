@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "puzzle": {
+      "implementation": "./src/executors/puzzle/executor",
+      "schema": "./src/executors/puzzle/schema.json",
+      "description": "puzzle executor"
+    }
+  }
+}

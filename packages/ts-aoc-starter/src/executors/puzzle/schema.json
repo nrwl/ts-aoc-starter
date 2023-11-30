@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "version": 2,
+  "title": "Puzzle executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "description": "The name of the target puzzle (e.g.: 'day-1-a')"
+    },
+    "data": {
+      "type": "string",
+      "description": "Whether to run with the sample or the actual data set"
+    }
+  },
+  "required": []
+}
