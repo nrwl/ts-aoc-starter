@@ -1,11 +1,55 @@
-# create-ts-aoc-starter
+# ts-aoc-starter
 
-This library was generated with [Nx](https://nx.dev).
+## Getting Started
 
-## Building
+```terminal
+npx create-ts-aoc-starter
+```
 
-Run `nx build create-ts-aoc-starter` to build the library.
+This will create a new workspace in the current directory with the following structure:
 
-## Running unit tests
+```file-tree
+ts-aoc-starter
+├── puzzles
+│   ├── day-1
+│   │   ├── day-1-a.data.txt
+│   │   ├── day-1-a.sample-data.txt
+│   │   ├── day-1-a.ts
+│   │   ├── day-1-b.data.txt
+│   │   ├── day-1-b.sample-data.txt
+│   │   └── day-1-b.ts
+│   ├── day-2
+│   ├── day-3
+```
 
-Run `nx test create-ts-aoc-starter` to execute the unit tests via [Jest](https://jestjs.io).
+## Running the Puzzles
+
+Copy and paste the sample data given in the problem into the `day-X-a.sample-data.txt` file.
+
+Copy and paste your larger unique actual data set into the `day-X-a.data.txt` file.
+
+Add your solution to the `day-X-a.ts` file.
+
+To run your solution against your sample data set, run the following command:
+
+```terminal
+nx day-1-a --data=sample
+```
+
+or
+
+```terminal
+pnpm run day-1-a:sample
+```
+
+To run your solution against your actual data set, run the following command:
+
+```terminal
+nx day-1-a
+```
+
+or
+
+```terminal
+pnpm run day-1-a
+```
