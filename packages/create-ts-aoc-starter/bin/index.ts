@@ -3,28 +3,20 @@
 import { createWorkspace } from 'create-nx-workspace';
 
 async function main() {
-  const name = process.argv[2]; // TODO: use libraries like yargs or enquirer to set your workspace name
-  if (!name) {
-    throw new Error('Please provide a name for the workspace');
-  }
+  console.log(
+    `🎄🎄🎄 Creating your Typescript Advent of Code Starter Repo... 🎄🎄🎄`
+  );
 
-  console.log(`Creating the workspace: ${name}`);
-
-  // This assumes "ts-aoc-starter" and "create-ts-aoc-starter" are at the same version
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const presetVersion = require('../package.json').version;
 
-  // TODO: update below to customize the workspace
-  const { directory } = await createWorkspace(
-    `ts-aoc-starter@${presetVersion}`,
-    {
-      name,
-      nxCloud: false,
-      packageManager: 'npm',
-    }
-  );
+  await createWorkspace(`ts-aoc-starter@${presetVersion}`, {
+    name: 'ts-aoc-starter',
+    nxCloud: false,
+    packageManager: 'npm',
+  });
 
-  console.log(`Successfully created the workspace: ${directory}.`);
+  console.log(`🎄🎄🎄 Success!! Happy Coding! 🎄🎄🎄`);
 }
 
 main();

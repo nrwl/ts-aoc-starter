@@ -33,7 +33,12 @@ export async function presetGenerator(tree: Tree) {
     const targetConfigB = createPuzzlePart(tree, `${dayName}-b`);
     projectConfiguration.targets[`${dayName}-b`] = targetConfigB;
   }
-  addProjectConfiguration(tree, 'ts-aoc-starter', projectConfiguration);
+  addProjectConfiguration(
+    tree,
+    'ts-aoc-starter-foo',
+    projectConfiguration,
+    true
+  );
   await formatFiles(tree);
 }
 
@@ -65,7 +70,7 @@ function createPuzzleTsFile(tree: Tree, dayName: string) {
     return 0;
   }
   
-  const answer = await day23a();
+  const answer = await ${rmDashes(dayName)}();
   console.log(chalk.bgGreen('Your Answer:'), chalk.green(answer));
 `;
   tree.write(filePath, content);
@@ -84,7 +89,11 @@ function createActualDataFile(tree: Tree, dayName: string) {
 }
 
 function rmDashes(name: string): string {
-  return name.replace('-', '');
+  let answer = name;
+  while (answer.includes('-')) {
+    answer = name.replace('-', '');
+  }
+  return answer;
 }
 
 export default presetGenerator;
