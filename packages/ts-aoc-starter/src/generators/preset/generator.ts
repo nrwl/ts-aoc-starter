@@ -20,7 +20,7 @@ export async function presetGenerator(tree: Tree) {
       typescript: 'latest',
     }
   );
-  await installPackagesTask(tree, undefined, undefined, 'pnpm');
+  await installPackagesTask(tree);
   const days = [] as string[];
   for (let i = 1; i <= 25; i++) {
     days.push(`day-${i}`);
@@ -192,7 +192,7 @@ nx day-1-a --data=sample
 or
 
 \`\`\`terminal
-pnpm run day-1-a:sample
+npm run day-1-a:sample
 \`\`\`
 
 To run your solution against your actual data set, run the following command:
@@ -204,7 +204,7 @@ nx day-1-a
 or
 
 \`\`\`terminal
-pnpm run day-1-a
+npm run day-1-a
 \`\`\`
 `;
   tree.write('README.md', content);

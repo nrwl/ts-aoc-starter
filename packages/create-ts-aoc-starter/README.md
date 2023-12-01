@@ -39,7 +39,7 @@ nx day-1-a --data=sample
 or
 
 ```terminal
-pnpm run day-1-a:sample
+npm run day-1-a:sample
 ```
 
 To run your solution against your actual data set, run the following command:
@@ -51,5 +51,5 @@ nx day-1-a
 or
 
 ```terminal
-pnpm run day-1-a
+npm run day-1-a
 ```

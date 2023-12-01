@@ -16,11 +16,11 @@ async function main() {
     {
       name: 'ts-aoc-starter',
       nxCloud: false,
-      packageManager: 'pnpm',
+      packageManager: 'npm',
     }
   );
 
-  execSync(`pnpm i`, { cwd: directory });
+  execSync(`npm i`, { cwd: directory });
   execSync(`git init`, { cwd: directory });
   execSync(`git add . && git commit -am "initial commit"`, { cwd: directory });
 
