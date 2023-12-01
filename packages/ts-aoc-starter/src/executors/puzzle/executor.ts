@@ -13,7 +13,7 @@ export default async function runExecutor(options: PuzzleExecutorSchema) {
     getDayFromTarget(options.target),
     `${options.target}.${options.data === 'sample' ? 'sample-' : ''}data.txt`
   );
-  execSync(`npx ts-node --esm ${tsFile} ${dataFile}`, { stdio: 'inherit' });
+  execSync(`npx tsx ${tsFile} ${dataFile}`, { stdio: 'inherit' });
   return { success: true };
 }
 

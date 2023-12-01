@@ -18,6 +18,7 @@ export async function presetGenerator(tree: Tree) {
     {
       '@types/node': 'latest',
       typescript: 'latest',
+      tsx: 'latest',
     }
   );
   await installPackagesTask(tree);
