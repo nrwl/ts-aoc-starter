@@ -2,8 +2,18 @@
 
 import { execSync } from 'child_process';
 import { createWorkspace } from 'create-nx-workspace';
+import * as readline from 'readline';
+
+const prompter = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 async function main() {
+  const location = await promptWithDefault(
+    'Where should I create your Typescript Advent of Code Starter Repo?',
+    'aoc'
+  );
   console.log(
     `🎄🎄🎄 Creating your Typescript Advent of Code Starter Repo... 🎄🎄🎄`
   );
@@ -14,7 +24,7 @@ async function main() {
   const { directory } = await createWorkspace(
     `ts-aoc-starter@${presetVersion}`,
     {
-      name: 'ts-aoc-starter',
+      name: location,
       nxCloud: false,
       packageManager: 'npm',
     }
@@ -25,6 +35,14 @@ async function main() {
   execSync(`git add . && git commit -am "initial commit"`, { cwd: directory });
 
   console.log(`🎄🎄🎄 Success!! Happy Coding! 🎄🎄🎄`);
+}
+
+function promptWithDefault(question, defaultValue) {
+  return new Promise<string>((resolve) => {
+    prompter.question(`${question} (${defaultValue}): `, (answer) => {
+      resolve(answer || defaultValue);
+    });
+  });
 }
 
 main();

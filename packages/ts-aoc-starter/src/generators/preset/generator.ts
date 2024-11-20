@@ -2,6 +2,7 @@ import {
   addDependenciesToPackageJson,
   formatFiles,
   installPackagesTask,
+  readJsonFile,
   Tree,
 } from '@nx/devkit';
 import * as path from 'path';
@@ -27,6 +28,7 @@ export async function presetGenerator(tree: Tree) {
     createPuzzlePart(tree, `a`, dayName);
     createPuzzlePart(tree, `b`, dayName);
   }
+  addDynamicTasksPlugin(tree);
   addTsConfig(tree);
   addUtilsFile(tree);
   addModuleToPackageJson(tree);
@@ -99,6 +101,17 @@ function createFileName(day: number, part: 'a' | 'b', dataSet?: string) {
 
 `;
   tree.write('utils.ts', content);
+}
+
+function addDynamicTasksPlugin(tree: Tree) {
+  // read in current nx.json
+  const currentContent = JSON.parse(tree.read('nx.json').toString());
+  // add the plugin to the plugins array
+  currentContent.plugins = currentContent.plugins
+    ? [...currentContent.plugins, `ts-aoc-starter/src/plugins/dynamic-tasks.js`]
+    : [`ts-aoc-starter/src/plugins/dynamic-tasks.js`];
+  // write the nx.json back to the tree
+  tree.write('nx.json', JSON.stringify(currentContent, null, 2));
 }
 
 function addTsConfig(tree: Tree) {
