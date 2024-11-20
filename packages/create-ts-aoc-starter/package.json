@@ -1,10 +1,10 @@
 {
   "name": "create-ts-aoc-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "create-nx-workspace": "20.1.2"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "bin": {

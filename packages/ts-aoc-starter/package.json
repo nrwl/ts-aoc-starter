@@ -1,6 +1,6 @@
 {
   "name": "ts-aoc-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "@nx/devkit": "20.1.2",
     "tslib": "^2.3.0"
