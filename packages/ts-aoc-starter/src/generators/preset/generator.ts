@@ -1,11 +1,8 @@
 import {
-  addProjectConfiguration,
-  formatFiles,
-  ProjectConfiguration,
-  TargetConfiguration,
-  Tree,
-  installPackagesTask,
   addDependenciesToPackageJson,
+  formatFiles,
+  installPackagesTask,
+  Tree,
 } from '@nx/devkit';
 import * as path from 'path';
 
@@ -26,18 +23,10 @@ export async function presetGenerator(tree: Tree) {
   for (let i = 1; i <= 25; i++) {
     days.push(`day-${i}`);
   }
-  const projectConfiguration: ProjectConfiguration = {
-    root: '.',
-    targets: {},
-  };
   for (const dayName of days) {
-    const targetConfigA = createPuzzlePart(tree, `${dayName}-a`, dayName);
-    projectConfiguration.targets[`${dayName}-a`] = targetConfigA;
-    const targetConfigB = createPuzzlePart(tree, `${dayName}-b`, dayName);
-    projectConfiguration.targets[`${dayName}-b`] = targetConfigB;
-    addScripts(tree, dayName);
+    createPuzzlePart(tree, `a`, dayName);
+    createPuzzlePart(tree, `b`, dayName);
   }
-  addProjectConfiguration(tree, 'ts-aoc-starter', projectConfiguration, true);
   addTsConfig(tree);
   addSharedFile(tree);
   addModuleToPackageJson(tree);
@@ -47,52 +36,36 @@ export async function presetGenerator(tree: Tree) {
   await formatFiles(tree);
 }
 
-function createPuzzlePart(
-  tree: Tree,
-  name: string,
-  dayName: string
-): TargetConfiguration {
-  const targetConfig = createPuzzleTarget(tree, name);
-  createPuzzleTsFile(tree, name, dayName);
-  createSampleDataFile(tree, name, dayName);
-  createActualDataFile(tree, name, dayName);
-  return targetConfig;
+function createPuzzlePart(tree: Tree, part: 'a' | 'b', dayName: string): void {
+  createPuzzleTsFile(tree, part, dayName);
+  createSampleDataFile(tree, part, dayName);
+  createActualDataFile(tree, part, dayName);
 }
 
-function createPuzzleTarget(tree: Tree, name: string): TargetConfiguration {
-  const targetConfig: TargetConfiguration = {
-    executor: 'ts-aoc-starter:puzzle',
-    options: {
-      target: name,
-    },
-  };
-  return targetConfig;
-}
+function createPuzzleTsFile(tree: Tree, part: 'a' | 'b', dayName: string) {
+  const filePath = path.join(dayName, `${part}.ts`);
+  const functionName = `${rmDashes(dayName)}${part}`;
+  const content = `import { runSolution } from '../utils.ts';
 
-function createPuzzleTsFile(tree: Tree, name: string, dayName: string) {
-  const filePath = path.join('puzzles', dayName, `${name}.ts`);
-  const content = `import { readData } from '../../shared.ts';
-import chalk from 'chalk';
-
-export async function ${rmDashes(name)}(dataPath?: string) {
-  const data = await readData(dataPath);
+/** provide your solution as the return of this function *
+export async function ${functionName}(data: string[]) {
+  console.log(data);
   return 0;
 }
 
-const answer = await ${rmDashes(name)}();
-console.log(chalk.bgGreen('Your Answer:'), chalk.green(answer));
+await runSolution(${functionName});
 `;
   tree.write(filePath, content);
 }
 
-function createSampleDataFile(tree: Tree, name: string, dayName: string) {
-  const filePath = path.join('puzzles', dayName, `${name}.sample-data.txt`);
+function createSampleDataFile(tree: Tree, part: 'a' | 'b', dayName: string) {
+  const filePath = path.join(dayName, `${part}.data.sample.txt`);
   const content = '';
   tree.write(filePath, content);
 }
 
-function createActualDataFile(tree: Tree, name: string, dayName: string) {
-  const filePath = path.join('puzzles', dayName, `${name}.data.txt`);
+function createActualDataFile(tree: Tree, part: 'a' | 'b', dayName: string) {
+  const filePath = path.join(dayName, `${part}.data.txt`);
   const content = '';
   tree.write(filePath, content);
 }
@@ -114,7 +87,7 @@ function addTsConfig(tree: Tree) {
   const content = `{
   "compilerOptions": {
     "module": "nodenext",
-    "target": "ES2019",
+    "target": "ESNext",
     "types": ["node"],
     "allowImportingTsExtensions": true,
     "noEmit": true
@@ -132,15 +105,6 @@ function addModuleToPackageJson(tree: Tree) {
 
 function removeNxJson(tree: Tree) {
   tree.delete('nx.json');
-}
-
-function addScripts(tree: Tree, dayName: string) {
-  const packageJson = JSON.parse(tree.read('package.json').toString());
-  packageJson.scripts[`${dayName}-a`] = `nx ${dayName}-a`;
-  packageJson.scripts[`${dayName}-a:sample`] = `nx ${dayName}-a --data=sample`;
-  packageJson.scripts[`${dayName}-b`] = `nx ${dayName}-b`;
-  packageJson.scripts[`${dayName}-b:sample`] = `nx ${dayName}-b --data=sample`;
-  tree.write('package.json', JSON.stringify(packageJson, null, 2));
 }
 
 function addPrettierRc(tree: Tree) {
