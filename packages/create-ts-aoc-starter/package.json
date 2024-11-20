@@ -1,6 +1,6 @@
 {
   "name": "create-ts-aoc-starter",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
     "create-nx-workspace": "20.1.2"
   },
