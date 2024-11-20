@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "packages/ts-aoc-starter-e2e/src",
+  "implicitDependencies": ["ts-aoc-starter"],
   "targets": {
     "e2e": {
       "executor": "@nx/jest:jest",
@@ -14,12 +15,7 @@
       "dependsOn": ["^build"]
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/ts-aoc-starter-e2e/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "implicitDependencies": ["ts-aoc-starter"]
+  }
 }

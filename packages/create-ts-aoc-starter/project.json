@@ -3,6 +3,8 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/create-ts-aoc-starter/bin",
   "projectType": "library",
+  "tags": [],
+  "implicitDependencies": ["ts-aoc-starter"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -19,14 +21,7 @@
       "dependsOn": ["build"]
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/create-ts-aoc-starter/**/*.ts",
-          "packages/create-ts-aoc-starter/package.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -35,7 +30,5 @@
         "jestConfig": "packages/create-ts-aoc-starter/jest.config.ts"
       }
     }
-  },
-  "tags": [],
-  "implicitDependencies": ["ts-aoc-starter"]
+  }
 }
