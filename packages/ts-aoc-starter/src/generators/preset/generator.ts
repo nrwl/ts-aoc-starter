@@ -28,9 +28,8 @@ export async function presetGenerator(tree: Tree) {
     createPuzzlePart(tree, `b`, dayName);
   }
   addTsConfig(tree);
-  addSharedFile(tree);
+  addUtilsFile(tree);
   addModuleToPackageJson(tree);
-  removeNxJson(tree);
   addPrettierRc(tree);
   updateReadme(tree);
   await formatFiles(tree);
@@ -70,16 +69,36 @@ function createActualDataFile(tree: Tree, part: 'a' | 'b', dayName: string) {
   tree.write(filePath, content);
 }
 
-function addSharedFile(tree: Tree) {
-  const content = `import { readFile } from 'fs/promises';
+function addUtilsFile(tree: Tree) {
+  const content = `import chalk from 'chalk';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
-export async function readData(path?: string) {
-  const fileName = path || process.argv[2];
-  const data = (await readFile(fileName)).toString().split('\\n');
+export async function runSolution(solution: (data: string[]) => any) {
+  const data = await readData();
+  const answer = await solution(data);
+  console.log(chalk.bgGreen('Your Answer:'), chalk.green(answer));
+}
+
+export async function readData() {
+  const [_, fullPath, dataSet] = process.argv as
+    | [string, string, string]
+    | [string, string];
+  const puzzle = fullPath.split('/').slice(-2).join('/');
+  const [day, part] = puzzle
+    .split('/')
+    .map((x, i) => (i === 0 ? +x.split('-')[1] : x)) as [number, 'a' | 'b'];
+  const fileName = createFileName(day, part, dataSet);
+  const data = (await readFile(fileName)).toString().split('\n');
   return data;
 }
+
+function createFileName(day: number, part: 'a' | 'b', dataSet?: string) {
+  return join(\`day-\${day}\`, \`\${part}.data\${dataSet ? \`.\${dataSet}\` : ''}.txt\`);
+}
+
 `;
-  tree.write('shared.ts', content);
+  tree.write('utils.ts', content);
 }
 
 function addTsConfig(tree: Tree) {
@@ -101,10 +120,6 @@ function addModuleToPackageJson(tree: Tree) {
   const packageJson = JSON.parse(tree.read('package.json').toString());
   packageJson.type = 'module';
   tree.write('package.json', JSON.stringify(packageJson, null, 2));
-}
-
-function removeNxJson(tree: Tree) {
-  tree.delete('nx.json');
 }
 
 function addPrettierRc(tree: Tree) {
