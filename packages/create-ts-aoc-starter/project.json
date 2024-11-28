@@ -17,7 +17,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs create-ts-aoc-starter {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs create-ts-aoc-starter 2.0.0 latest",
       "dependsOn": ["build"]
     },
     "lint": {

@@ -2,7 +2,6 @@ import {
   addDependenciesToPackageJson,
   formatFiles,
   installPackagesTask,
-  readJsonFile,
   Tree,
 } from '@nx/devkit';
 import * as path from 'path';
@@ -19,7 +18,7 @@ export async function presetGenerator(tree: Tree) {
       tsx: 'latest',
     }
   );
-  await installPackagesTask(tree);
+  await installPackagesTask(tree, true, undefined, 'pnpm');
   const days = [] as string[];
   for (let i = 1; i <= 25; i++) {
     days.push(`day-${i}`);
@@ -28,7 +27,7 @@ export async function presetGenerator(tree: Tree) {
     createPuzzlePart(tree, `a`, dayName);
     createPuzzlePart(tree, `b`, dayName);
   }
-  addDynamicTasksPlugin(tree);
+  makeChangesToNxJson(tree);
   addTsConfig(tree);
   addUtilsFile(tree);
   addModuleToPackageJson(tree);
@@ -48,7 +47,7 @@ function createPuzzleTsFile(tree: Tree, part: 'a' | 'b', dayName: string) {
   const functionName = `${rmDashes(dayName)}${part}`;
   const content = `import { runSolution } from '../utils.ts';
 
-/** provide your solution as the return of this function *
+/** provide your solution as the return of this function */
 export async function ${functionName}(data: string[]) {
   console.log(data);
   return 0;
@@ -91,7 +90,7 @@ export async function readData() {
     .split('/')
     .map((x, i) => (i === 0 ? +x.split('-')[1] : x)) as [number, 'a' | 'b'];
   const fileName = createFileName(day, part, dataSet);
-  const data = (await readFile(fileName)).toString().split('\n');
+  const data = (await readFile(fileName)).toString().split('\\n');
   return data;
 }
 
@@ -103,13 +102,16 @@ function createFileName(day: number, part: 'a' | 'b', dataSet?: string) {
   tree.write('utils.ts', content);
 }
 
-function addDynamicTasksPlugin(tree: Tree) {
+function makeChangesToNxJson(tree: Tree) {
   // read in current nx.json
   const currentContent = JSON.parse(tree.read('nx.json').toString());
   // add the plugin to the plugins array
   currentContent.plugins = currentContent.plugins
     ? [...currentContent.plugins, `ts-aoc-starter/src/plugins/dynamic-tasks.js`]
     : [`ts-aoc-starter/src/plugins/dynamic-tasks.js`];
+  // add useDaemon proccess and defaultProject settings:
+  currentContent.useDaemonProcess = false;
+  currentContent.defaultProject = 'aoc';
   // write the nx.json back to the tree
   tree.write('nx.json', JSON.stringify(currentContent, null, 2));
 }
@@ -146,59 +148,19 @@ function addPrettierRc(tree: Tree) {
 function updateReadme(tree: Tree) {
   const content = `# ts-aoc-starter
 
-## Getting Started
+## Running A Solution
 
-\`\`\`terminal
-npx create-ts-aoc-starter
-\`\`\`
+Provide your solution in the \`day-X/a.ts\` file.
 
-This will create a new workspace in the current directory with the following structure:
+Copy and paste your unique actual data set into the \`day-X/a.data.txt\` file. To run your solution against this data set, run: \`nx day-X-a\` or \`nx X-a\` or \`nx X\`.
 
-\`\`\`file-tree
-ts-aoc-starter
-├── puzzles
-│   ├── day-1
-│   │   ├── day-1-a.data.txt
-│   │   ├── day-1-a.sample-data.txt
-│   │   ├── day-1-a.ts
-│   │   ├── day-1-b.data.txt
-│   │   ├── day-1-b.sample-data.txt
-│   │   └── day-1-b.ts
-│   ├── day-2
-│   ├── day-3
-\`\`\`
+You can copy and paste the sample data given in the problem into the \`day-X/a.data.sample.txt\` file, and run it with the command: \`nx day-X-a-sample\` or \`nx X-a-sample\` or \`nx X-sample\`.
 
-## Running the Puzzles
+If you want to provide an additional data set, you can create a file following the format: \`day-X/a.data.{DATA_SET_NAME}.txt\`. You can then run your solution against this data set with the command: \`nx day-X-a-{DATA_SET_NAME}\` or \`nx X-a-{DATA_SET_NAME}\`.
 
-Copy and paste the sample data given in the problem into the \`day-X-a.sample-data.txt\` file.
+Usually, each day is split into two parts, in this template, we call it "part A" and "part B". A \`day-X/b.ts\` file has been provided for you for the second half of each day, as well as a matching set of \`data.txt\` files. You can run these with the command: \`nx day-X-b\` or \`nx X-b\` (note that \`nx X\` will always only run 'part A'). The same rules apply for providing sample and additional data sets for part B.
 
-Copy and paste your larger unique actual data set into the \`day-X-a.data.txt\` file.
-
-Add your solution to the \`day-X-a.ts\` file.
-
-To run your solution against your sample data set, run the following command:
-
-\`\`\`terminal
-nx day-1-a --data=sample
-\`\`\`
-
-or
-
-\`\`\`terminal
-npm run day-1-a:sample
-\`\`\`
-
-To run your solution against your actual data set, run the following command:
-
-\`\`\`terminal
-nx day-1-a
-\`\`\`
-
-or
-
-\`\`\`terminal
-npm run day-1-a
-\`\`\`
+Usually part B builds on the solution for part A. Obviously, if it makes sense, you can just continue to create your solution in the 'part A' files and work on from there, ignoring the 'part B' files.
 `;
   tree.write('README.md', content);
 }
