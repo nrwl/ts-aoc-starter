@@ -9,13 +9,13 @@ export const createNodesV2: CreateNodesV2 = [
   async (files, _options): Promise<CreateNodesResultV2> => {
     const result = [];
     for (const file of files) {
-      result.push(createTargetForFile(file));
+      result.push(createTargetsForFile(file));
     }
     return result;
   },
 ];
 
-function createTargetForFile(file: string): [string, CreateNodesResult] {
+function createTargetsForFile(file: string): [string, CreateNodesResult] {
   const [day, part, dataSetName] = deriveFromFileName(file);
   const aliases = [
     `day-${day}-${part}${dataSetName ? `-${dataSetName}` : ''}`,
@@ -41,8 +41,18 @@ function createTargetForFile(file: string): [string, CreateNodesResult] {
       },
     },
   ];
+  // add standard targets
   for (const alias of aliases) {
     result[1].projects['.'].targets[alias] = task;
+  }
+  // add targets for watching
+  for (const alias of aliases) {
+    result[1].projects['.'].targets[`watch-${alias}`] = {
+      executor: 'nx:run-commands',
+      options: {
+        commands: [`nx watch --all -- nx ${alias}`, `nx ${alias}`],
+      },
+    };
   }
   return result;
 }
