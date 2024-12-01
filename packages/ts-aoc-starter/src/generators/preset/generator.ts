@@ -169,6 +169,10 @@ export default [
 function updateReadme(tree: Tree) {
   const content = `# ts-aoc-starter
 
+## Video On How To Use This Starter
+
+[Watch the video](https://www.youtube.com/watch?v=st6Yq-19bW8)
+
 ## Running the Puzzles
 
 Provide your solution to the first part of everyday in the \`day-X/a.ts\` file (where \`X\` is the day number!):
