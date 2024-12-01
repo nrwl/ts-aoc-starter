@@ -18,6 +18,9 @@ export async function presetGenerator(tree: Tree) {
       tsx: 'latest',
       '@eslint/js': '^9.16.0',
       eslint: '^9.16.0',
+      'eslint-config-prettier': '^9.1.0',
+      'eslint-plugin-prettier': '^5.2.1',
+      prettier: '^3.4.1',
       globals: '^15.12.0',
       'typescript-eslint': '^8.16.0',
     }
@@ -35,7 +38,7 @@ export async function presetGenerator(tree: Tree) {
   addTsConfig(tree);
   addUtilsFile(tree);
   addModuleToPackageJson(tree);
-  addPrettierRc(tree);
+  addPrettierConfig(tree);
   addEslintConfig(tree);
   updateReadme(tree);
   await formatFiles(tree);
@@ -141,26 +144,34 @@ function addModuleToPackageJson(tree: Tree) {
   tree.write('package.json', JSON.stringify(packageJson, null, 2));
 }
 
-function addPrettierRc(tree: Tree) {
-  const content = `{
-  "singleQuote": true,
-}
+function addPrettierConfig(tree: Tree) {
+  const content = `/**
+ * @see https://prettier.io/docs/en/configuration.html
+ * @type {import("prettier").Config}
+ */
+export default {
+  singleQuote: true,
+};
 `;
-  tree.write('.prettierrc', content);
+  tree.write('prettier.config.js', content);
 }
 
 function addEslintConfig(tree: Tree) {
-  const content = `import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
+  const content = `import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  {files: ["**/*.{js,mjs,cjs,ts}"]},
+  {files: ['**/*.{js,mjs,cjs,ts}']},
   {languageOptions: { globals: globals.node }},
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
+  prettierRecommended,
+  eslintConfigPrettier,
 ];
 `;
   tree.write('eslint.config.js', content);
@@ -196,7 +207,7 @@ Copy and paste your unique actual data set into the \`day-X/a.data.txt\` file. T
 
 You can copy and paste the sample data given in the problem into the \`day-X/a.data.sample.txt\` file, and run it with the command:
 - \`nx day-X-a-sample\`
-- or \`nx X-a-sample\` 
+- or \`nx X-a-sample\`
 - or \`nx X-sample\`.
 
 If you want to provide an additional data set, you can create a file following the format: \`day-X/a.data.{DATA_SET_NAME}.txt\`. You can then run your solution against this data set with the command:
